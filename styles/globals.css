@@ -1,0 +1,223 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 14px;
+  
+  /* Brand Colors */
+  --primary-deep-blue: #1E3A8A;
+  --accent-light-blue: #60A5FA;
+  
+  /* Neutrals */
+  --text-primary: #4B5563;
+  --text-secondary: #9CA3AF;
+  --border-color: #D1D5DB;
+  --background-white: #FFFFFF;
+  
+  /* Design System */
+  --spacing-base: 24px;
+  --border-radius: 16px;
+  --touch-target: 48px;
+  
+  /* Shadcn compatibility */
+  --background: #ffffff;
+  --foreground: #4B5563;
+  --card: #ffffff;
+  --card-foreground: #4B5563;
+  --popover: #ffffff;
+  --popover-foreground: #4B5563;
+  --primary: #1E3A8A;
+  --primary-foreground: #ffffff;
+  --secondary: #60A5FA;
+  --secondary-foreground: #ffffff;
+  --muted: #F9FAFB;
+  --muted-foreground: #9CA3AF;
+  --accent: #60A5FA;
+  --accent-foreground: #ffffff;
+  --destructive: #EF4444;
+  --destructive-foreground: #ffffff;
+  --border: #D1D5DB;
+  --input: transparent;
+  --input-background: #F9FAFB;
+  --switch-background: #D1D5DB;
+  --ring: #60A5FA;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #1E3A8A;
+  --chart-2: #60A5FA;
+  --chart-3: #3B82F6;
+  --chart-4: #1D4ED8;
+  --chart-5: #2563EB;
+  --radius: 1rem;
+}
+
+.dark {
+  --background: #1F2937;
+  --foreground: #F9FAFB;
+  --card: #1F2937;
+  --card-foreground: #F9FAFB;
+  --popover: #1F2937;
+  --popover-foreground: #F9FAFB;
+  --primary: #60A5FA;
+  --primary-foreground: #1E3A8A;
+  --secondary: #374151;
+  --secondary-foreground: #F9FAFB;
+  --muted: #374151;
+  --muted-foreground: #9CA3AF;
+  --accent: #374151;
+  --accent-foreground: #F9FAFB;
+  --destructive: #EF4444;
+  --destructive-foreground: #F9FAFB;
+  --border: #374151;
+  --input: #374151;
+  --ring: #60A5FA;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Custom brand colors */
+  --color-primary-deep-blue: var(--primary-deep-blue);
+  --color-accent-light-blue: var(--accent-light-blue);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border-color: var(--border-color);
+  --color-background-white: var(--background-white);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  /* Mobile-first responsive design */
+  html {
+    font-size: var(--font-size);
+  }
+  
+  /* Touch targets */
+  .touch-target {
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
+  }
+  
+  /* Brand color utilities */
+  .text-deep-blue { color: var(--primary-deep-blue); }
+  .text-light-blue { color: var(--accent-light-blue); }
+  .text-primary { color: var(--text-primary); }
+  .text-secondary { color: var(--text-secondary); }
+  .bg-deep-blue { background-color: var(--primary-deep-blue); }
+  .bg-light-blue { background-color: var(--accent-light-blue); }
+  .border-light { border-color: var(--border-color); }
+  
+  /* Animation utilities */
+  .animate-pulse-light-blue {
+    animation: pulse-light-blue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-light-blue {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; background-color: var(--accent-light-blue); }
+  }
+}
+
+/**
+ * Base typography - optimized for Indian MSME users
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: 1.75rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.4;
+      color: var(--primary-deep-blue);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.4;
+      color: var(--primary-deep-blue);
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.4;
+      color: var(--text-primary);
+    }
+
+    h4 {
+      font-size: 1.125rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.4;
+      color: var(--text-primary);
+    }
+
+    p {
+      font-size: 1rem;
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+
+    label {
+      font-size: 1rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.4;
+      color: var(--text-secondary);
+    }
+
+    button {
+      font-size: 1rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.4;
+    }
+
+    input {
+      font-size: 1.125rem;
+      font-weight: var(--font-weight-normal);
+      line-height: 1.4;
+      color: var(--text-primary);
+    }
+    
+    /* Placeholder text */
+    input::placeholder {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+    }
+  }
+}
