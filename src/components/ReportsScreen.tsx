@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { BarChart3, Package, AlertTriangle, TrendingUp, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';

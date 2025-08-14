@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Edit, Store, User, Phone, MapPin, Globe, BarChart3, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';

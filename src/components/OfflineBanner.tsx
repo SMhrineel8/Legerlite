@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { WifiOff, Smartphone } from 'lucide-react';
 import type { Language } from '../App';
 
