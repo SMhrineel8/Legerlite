@@ -6,7 +6,9 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback } from './ui/avatar';
-import type { Screen, UserProfile, Language } from '../App';
+import Screen from '../App';
+import UserProfile from '../App';
+import Language from '../App';
 
 interface ClientsScreenProps {
   userProfile: UserProfile | null;

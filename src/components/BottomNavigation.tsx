@@ -1,7 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Home, Package, ShoppingCart, BarChart3, User } from 'lucide-react';
-import type { Screen } from '../App';
+import Screen from '../App';
 
 interface BottomNavigationProps {
   currentScreen: Screen;
@@ -12,27 +11,27 @@ interface BottomNavigationProps {
 export function BottomNavigation({ currentScreen, onNavigate, labels }: BottomNavigationProps) {
   const navItems = [
     {
-      screen: 'dashboard' as Screen,
+      screen: 'dashboard' as unknown as Screen,
       icon: Home,
       label: labels.home
     },
     {
-      screen: 'inventory' as Screen,
+      screen: 'inventory' as unknown as Screen,
       icon: Package,
       label: labels.inventory
     },
     {
-      screen: 'quickadd' as Screen,
+      screen: 'quickadd' as unknown as Screen,
       icon: ShoppingCart,
       label: labels.orders
     },
     {
-      screen: 'reports' as Screen,
+      screen: 'reports' as unknown as Screen,
       icon: BarChart3,
       label: labels.reports
     },
     {
-      screen: 'profile' as Screen,
+      screen: 'profile' as unknown as Screen,
       icon: User,
       label: labels.profile
     }
@@ -51,7 +50,7 @@ export function BottomNavigation({ currentScreen, onNavigate, labels }: BottomNa
           
           return (
             <motion.button
-              key={item.screen}
+              key={String(item.screen)}
               className="flex flex-col items-center py-2 px-4 min-w-0 flex-1 touch-target"
               onClick={() => onNavigate(item.screen)}
               whileTap={{ scale: 0.95 }}
