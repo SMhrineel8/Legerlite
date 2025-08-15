@@ -1,315 +1,124 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Store, User, Phone, MapPin, Globe } from 'lucide-react';
-import { Button } from './ui/button';
+import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
-import type { Language, UserProfile } from '../App';
+import type { UserProfile, Language } from '../App';
 
 interface OnboardingScreenProps {
+  onOnboardingComplete: (userProfile: UserProfile) => void;
   language: Language;
-  labels: any;
-  onComplete: (profile: UserProfile) => void;
-  onLanguageChange: (lang: Language) => void;
 }
 
-export function OnboardingScreen({ language, labels, onComplete, onLanguageChange }: OnboardingScreenProps) {
-  const [formData, setFormData] = useState({
-    shopName: '',
-    ownerName: '',
-    whatsappPhone: '',
-    city: ''
-  });
+export function OnboardingScreen({ onOnboardingComplete, language }: OnboardingScreenProps) {
+  const [shopName, setShopName] = useState('');
+  const [ownerName, setOwnerName] = useState('');
+  const [whatsappPhone, setWhatsappPhone] = useState('');
+  const [city, setCity] = useState('');
+  const [error, setError] = useState('');
 
-  const [focusedField, setFocusedField] = useState<string | null>(null);
-
-  const onboardingLabels = {
+  const onboardingLabels: Record<Language, any> = {
     en: {
-      welcome: 'Welcome to Business Manager',
-      subtitle: 'Set up your shop in just a few steps',
+      welcome: 'Welcome!',
+      subtitle: 'Please tell us about your business.',
       shopName: 'Shop Name',
-      shopNamePlaceholder: 'Enter your shop name',
+      shopNamePlaceholder: 'e.g., Gupta Store',
       ownerName: 'Owner Name',
-      ownerNamePlaceholder: 'Enter owner name',
-      whatsappPhone: 'WhatsApp Phone',
-      phonePlaceholder: '+91 XXXXX XXXXX',
+      ownerNamePlaceholder: 'e.g., Ramesh Gupta',
+      whatsappPhone: 'WhatsApp Phone Number',
+      phonePlaceholder: 'e.g., 9876543210',
       city: 'City',
-      cityPlaceholder: 'Enter your city',
-      language: 'Language',
-      english: 'English',
-      hindi: 'हिंदी',
-      startTrial: 'Start Free Trial',
-      required: 'This field is required'
+      cityPlaceholder: 'e.g., Mumbai',
+      onboard: 'Get Started',
+      required: 'All fields are required.'
     },
     hi: {
-      welcome: 'व्यवसाय प्रबंधक में आपका स्वागत है',
-      subtitle: 'कुछ ही चरणों में अपनी दुकान सेट करें',
+      welcome: 'स्वागत है!',
+      subtitle: 'कृपया हमें अपने व्यवसाय के बारे में बताएं।',
       shopName: 'दुकान का नाम',
-      shopNamePlaceholder: 'अपनी दुकान का नाम दर्ज करें',
+      shopNamePlaceholder: 'जैसे, गुप्ता स्टोर',
       ownerName: 'मालिक का नाम',
-      ownerNamePlaceholder: 'मालिक का नाम दर्ज करें',
-      whatsappPhone: 'व्हाट्सएप फोन',
-      phonePlaceholder: '+91 XXXXX XXXXX',
+      ownerNamePlaceholder: 'जैसे, रमेश गुप्ता',
+      whatsappPhone: 'व्हाट्सएप फोन नंबर',
+      phonePlaceholder: 'जैसे, 9876543210',
       city: 'शहर',
-      cityPlaceholder: 'अपना शहर दर्ज करें',
-      language: 'भाषा',
-      english: 'English',
-      hindi: 'हिंदी',
-      startTrial: 'निःशुल्क परीक्षण शुरू करें',
-      required: 'यह फ़ील्ड आवश्यक है'
+      cityPlaceholder: 'जैसे, मुंबई',
+      onboard: 'शुरू करें',
+      required: 'सभी फ़ील्ड अनिवार्य हैं।'
     }
   };
 
   const t = onboardingLabels[language];
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = () => {
-    if (formData.shopName && formData.ownerName && formData.whatsappPhone && formData.city) {
-      onComplete({
-        ...formData,
-        language
-      });
+  const handleOnboarding = () => {
+    if (shopName && ownerName && whatsappPhone && city) {
+      const newUserProfile: UserProfile = { shopName, ownerName, whatsappPhone, city };
+      onOnboardingComplete(newUserProfile);
+    } else {
+      setError(t.required);
     }
   };
 
-  const isFormValid = formData.shopName && formData.ownerName && formData.whatsappPhone && formData.city;
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background-white to-accent-light-blue/10 flex flex-col">
-      {/* Header */}
-      <motion.div 
-        className="bg-deep-blue h-20 flex items-center justify-center relative"
-        initial={{ y: -80 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+    <motion.div
+      className="flex flex-col h-full bg-deep-blue text-white p-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <h1 className="text-3xl font-bold mb-2">{t.welcome}</h1>
+      <p className="text-white/80 mb-8">{t.subtitle}</p>
+
+      <Card className="rounded-3xl p-6 bg-white shadow-xl">
+        <CardContent className="p-0 space-y-4">
+          <div>
+            <label className="text-text-primary text-sm font-medium">{t.shopName}</label>
+            <Input
+              placeholder={t.shopNamePlaceholder}
+              value={shopName}
+              onChange={(e) => setShopName(e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <label className="text-text-primary text-sm font-medium">{t.ownerName}</label>
+            <Input
+              placeholder={t.ownerNamePlaceholder}
+              value={ownerName}
+              onChange={(e) => setOwnerName(e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <label className="text-text-primary text-sm font-medium">{t.whatsappPhone}</label>
+            <Input
+              placeholder={t.phonePlaceholder}
+              value={whatsappPhone}
+              onChange={(e) => setWhatsappPhone(e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <label className="text-text-primary text-sm font-medium">{t.city}</label>
+            <Input
+              placeholder={t.cityPlaceholder}
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="mt-1"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {error && <p className="text-red-400 text-center mt-4">{error}</p>}
+
+      <motion.button
+        onClick={handleOnboarding}
+        className="w-full bg-white text-deep-blue font-bold py-4 rounded-xl mt-8 shadow-lg"
+        whileTap={{ scale: 0.98 }}
+        whileHover={{ scale: 1.02 }}
       >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-        >
-          <Store className="w-8 h-8 text-white" />
-        </motion.div>
-      </motion.div>
-
-      {/* Main Content */}
-      <div className="flex-1 px-6 py-8">
-        <motion.div
-          className="max-w-md mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          {/* Welcome Text */}
-          <div className="text-center mb-8">
-            <h1 className="text-2xl mb-2">{t.welcome}</h1>
-            <p className="text-secondary">{t.subtitle}</p>
-          </div>
-
-          {/* Form */}
-          <div className="space-y-5">
-            {/* Shop Name */}
-            <motion.div
-              className="space-y-2"
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.1 }}
-            >
-              <Label htmlFor="shopName" className="text-secondary flex items-center gap-2">
-                <motion.div
-                  animate={{ 
-                    scale: focusedField === 'shopName' ? 1.1 : 1,
-                    color: focusedField === 'shopName' ? '#60A5FA' : '#9CA3AF'
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Store className="w-4 h-4" />
-                </motion.div>
-                {t.shopName}
-              </Label>
-              <Input
-                id="shopName"
-                value={formData.shopName}
-                onChange={(e) => handleInputChange('shopName', e.target.value)}
-                onFocus={() => setFocusedField('shopName')}
-                onBlur={() => setFocusedField(null)}
-                placeholder={t.shopNamePlaceholder}
-                className={`h-14 rounded-2xl border-2 transition-all duration-200 ${
-                  focusedField === 'shopName' 
-                    ? 'border-deep-blue shadow-lg shadow-light-blue/20' 
-                    : 'border-border-color'
-                }`}
-              />
-            </motion.div>
-
-            {/* Owner Name */}
-            <motion.div
-              className="space-y-2"
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.1 }}
-            >
-              <Label htmlFor="ownerName" className="text-secondary flex items-center gap-2">
-                <motion.div
-                  animate={{ 
-                    scale: focusedField === 'ownerName' ? 1.1 : 1,
-                    color: focusedField === 'ownerName' ? '#60A5FA' : '#9CA3AF'
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <User className="w-4 h-4" />
-                </motion.div>
-                {t.ownerName}
-              </Label>
-              <Input
-                id="ownerName"
-                value={formData.ownerName}
-                onChange={(e) => handleInputChange('ownerName', e.target.value)}
-                onFocus={() => setFocusedField('ownerName')}
-                onBlur={() => setFocusedField(null)}
-                placeholder={t.ownerNamePlaceholder}
-                className={`h-14 rounded-2xl border-2 transition-all duration-200 ${
-                  focusedField === 'ownerName' 
-                    ? 'border-deep-blue shadow-lg shadow-light-blue/20' 
-                    : 'border-border-color'
-                }`}
-              />
-            </motion.div>
-
-            {/* WhatsApp Phone */}
-            <motion.div
-              className="space-y-2"
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.1 }}
-            >
-              <Label htmlFor="phone" className="text-secondary flex items-center gap-2">
-                <motion.div
-                  animate={{ 
-                    scale: focusedField === 'phone' ? 1.1 : 1,
-                    color: focusedField === 'phone' ? '#60A5FA' : '#9CA3AF'
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Phone className="w-4 h-4" />
-                </motion.div>
-                {t.whatsappPhone}
-              </Label>
-              <Input
-                id="phone"
-                value={formData.whatsappPhone}
-                onChange={(e) => handleInputChange('whatsappPhone', e.target.value)}
-                onFocus={() => setFocusedField('phone')}
-                onBlur={() => setFocusedField(null)}
-                placeholder={t.phonePlaceholder}
-                type="tel"
-                className={`h-14 rounded-2xl border-2 transition-all duration-200 ${
-                  focusedField === 'phone' 
-                    ? 'border-deep-blue shadow-lg shadow-light-blue/20' 
-                    : 'border-border-color'
-                }`}
-              />
-            </motion.div>
-
-            {/* City */}
-            <motion.div
-              className="space-y-2"
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.1 }}
-            >
-              <Label htmlFor="city" className="text-secondary flex items-center gap-2">
-                <motion.div
-                  animate={{ 
-                    scale: focusedField === 'city' ? 1.1 : 1,
-                    color: focusedField === 'city' ? '#60A5FA' : '#9CA3AF'
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <MapPin className="w-4 h-4" />
-                </motion.div>
-                {t.city}
-              </Label>
-              <Input
-                id="city"
-                value={formData.city}
-                onChange={(e) => handleInputChange('city', e.target.value)}
-                onFocus={() => setFocusedField('city')}
-                onBlur={() => setFocusedField(null)}
-                placeholder={t.cityPlaceholder}
-                className={`h-14 rounded-2xl border-2 transition-all duration-200 ${
-                  focusedField === 'city' 
-                    ? 'border-deep-blue shadow-lg shadow-light-blue/20' 
-                    : 'border-border-color'
-                }`}
-              />
-            </motion.div>
-
-            {/* Language Toggle */}
-            <motion.div
-              className="space-y-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Label className="text-secondary flex items-center gap-2">
-                <Globe className="w-4 h-4" />
-                {t.language}
-              </Label>
-              <div className="flex bg-muted rounded-2xl p-1 h-14">
-                <motion.button
-                  className={`flex-1 rounded-xl flex items-center justify-center transition-all duration-200 ${
-                    language === 'en' 
-                      ? 'bg-deep-blue text-white shadow-md' 
-                      : 'text-text-secondary'
-                  }`}
-                  onClick={() => onLanguageChange('en')}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {t.english}
-                </motion.button>
-                <motion.button
-                  className={`flex-1 rounded-xl flex items-center justify-center transition-all duration-200 ${
-                    language === 'hi' 
-                      ? 'bg-deep-blue text-white shadow-md' 
-                      : 'text-text-secondary'
-                  }`}
-                  onClick={() => onLanguageChange('hi')}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {t.hindi}
-                </motion.button>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* CTA Button */}
-      <div className="p-6">
-        <motion.div
-          whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.1 }}
-        >
-          <Button
-            onClick={handleSubmit}
-            disabled={!isFormValid}
-            className={`w-full h-14 rounded-2xl transition-all duration-300 ${
-              isFormValid
-                ? 'bg-deep-blue text-white shadow-lg shadow-light-blue/30 hover:shadow-xl hover:shadow-light-blue/40'
-                : 'bg-muted text-muted-foreground cursor-not-allowed'
-            }`}
-          >
-            <motion.span
-              animate={{ 
-                scale: isFormValid ? 1 : 0.95,
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              {t.startTrial}
-            </motion.span>
-          </Button>
-        </motion.div>
-      </div>
-    </div>
+        {t.onboard}
+      </motion.button>
+    </motion.div>
   );
 }

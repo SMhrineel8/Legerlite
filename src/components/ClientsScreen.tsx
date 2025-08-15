@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Plus, Phone, MapPin, Users, IndianRupee } from 'lucide-react';
 import { Input } from './ui/input';
-import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback } from './ui/avatar';
-import Screen from '../App';
-import UserProfile from '../App';
-import Language from '../App';
+import type { Screen, UserProfile, Language } from '../App';
 
 interface ClientsScreenProps {
   userProfile: UserProfile | null;
@@ -32,7 +29,7 @@ export function ClientsScreen({ userProfile, language, labels, onNavigate }: Cli
   const [searchQuery, setSearchQuery] = useState('');
   const [focusedSearch, setFocusedSearch] = useState(false);
 
-  const clientsLabels = {
+  const clientsLabels: Record<Language, any> = {
     en: {
       clients: 'Clients',
       searchPlaceholder: 'Search clients...',
@@ -124,14 +121,14 @@ export function ClientsScreen({ userProfile, language, labels, onNavigate }: Cli
   return (
     <div className="flex flex-col h-full bg-background-white">
       {/* Header */}
-      <motion.div 
+      <motion.div
         className="bg-deep-blue px-6 py-4"
         initial={{ y: -60 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.4 }}
       >
         <h1 className="text-white text-xl mb-4">{t.clients}</h1>
-        
+
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="bg-white/10 rounded-xl p-3">
@@ -167,9 +164,7 @@ export function ClientsScreen({ userProfile, language, labels, onNavigate }: Cli
               onBlur={() => setFocusedSearch(false)}
               placeholder={t.searchPlaceholder}
               className={`pl-12 h-12 bg-white rounded-2xl border-2 transition-all duration-200 ${
-                focusedSearch 
-                  ? 'border-deep-blue shadow-lg shadow-light-blue/20' 
-                  : 'border-transparent'
+                focusedSearch ? 'border-deep-blue shadow-lg shadow-light-blue/20' : 'border-transparent'
               }`}
             />
           </motion.div>
@@ -178,7 +173,7 @@ export function ClientsScreen({ userProfile, language, labels, onNavigate }: Cli
 
       {/* Clients List */}
       <div className="flex-1 overflow-auto p-6 pb-24">
-        <motion.div 
+        <motion.div
           className="space-y-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -227,17 +222,11 @@ export function ClientsScreen({ userProfile, language, labels, onNavigate }: Cli
                     {/* Outstanding Badge */}
                     <div className="text-right">
                       {client.outstanding > 0 ? (
-                        <Badge 
-                          variant="outline"
-                          className="border-light-blue text-light-blue bg-light-blue/10 mb-2"
-                        >
+                        <Badge variant="outline" className="border-light-blue text-light-blue bg-light-blue/10 mb-2">
                           ₹{client.outstanding.toLocaleString()}
                         </Badge>
                       ) : (
-                        <Badge 
-                          variant="outline"
-                          className="border-green-500 text-green-600 bg-green-50 mb-2"
-                        >
+                        <Badge variant="outline" className="border-green-500 text-green-600 bg-green-50 mb-2">
                           {t.paid}
                         </Badge>
                       )}
@@ -279,7 +268,7 @@ export function ClientsScreen({ userProfile, language, labels, onNavigate }: Cli
         whileHover={{ scale: 1.05 }}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
+        transition={{ delay: 0.6, type: 'spring', stiffness: 200 }}
       >
         <Plus className="w-8 h-8 text-white" />
       </motion.button>

@@ -1,19 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Menu, 
-  Bell, 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  FileText, 
-  BarChart3,
-  Plus,
-  Store,
-  Package,
-  Users,
-  Receipt
-} from 'lucide-react';
+import { Menu, Bell, TrendingUp, TrendingDown, DollarSign, FileText, BarChart3, Plus, Store, Package, Users, Receipt } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -29,7 +16,7 @@ interface DashboardScreenProps {
 }
 
 export function DashboardScreen({ userProfile, language, labels, onNavigate, onSettingsOpen }: DashboardScreenProps) {
-  const dashboardLabels = {
+  const dashboardLabels: Record<Language, any> = {
     en: {
       totalRevenue: 'Total Revenue',
       outstanding: 'Outstanding',
@@ -68,30 +55,9 @@ export function DashboardScreen({ userProfile, language, labels, onNavigate, onS
 
   // Mock data for demo
   const metrics = [
-    {
-      title: t.totalRevenue,
-      value: '₹2,45,000',
-      change: '+10%',
-      trend: 'up',
-      icon: DollarSign,
-      color: '#1E3A8A'
-    },
-    {
-      title: t.outstanding,
-      value: '₹45,000',
-      change: '-5%',
-      trend: 'down',
-      icon: FileText,
-      color: '#EF4444'
-    },
-    {
-      title: t.avgInvoice,
-      value: '₹8,500',
-      change: '+15%',
-      trend: 'up',
-      icon: BarChart3,
-      color: '#60A5FA'
-    }
+    { title: t.totalRevenue, value: '₹2,45,000', change: '+10%', trend: 'up', icon: DollarSign, color: '#1E3A8A' },
+    { title: t.outstanding, value: '₹45,000', change: '-5%', trend: 'down', icon: FileText, color: '#EF4444' },
+    { title: t.avgInvoice, value: '₹8,500', change: '+15%', trend: 'up', icon: BarChart3, color: '#60A5FA' }
   ];
 
   const revenueData = [
@@ -110,168 +76,138 @@ export function DashboardScreen({ userProfile, language, labels, onNavigate, onS
   ];
 
   const quickActions = [
-    { 
-      title: t.createInvoice, 
-      icon: FileText, 
-      action: () => onNavigate('invoice'),
-      color: '#1E3A8A'
-    },
-    { 
-      title: t.viewReports, 
-      icon: BarChart3, 
-      action: () => onNavigate('reports'),
-      color: '#60A5FA'
-    },
-    { 
-      title: t.manageInventory, 
-      icon: Package, 
-      action: () => onNavigate('inventory'),
-      color: '#1E3A8A'
-    },
-    { 
-      title: t.addClient, 
-      icon: Users, 
-      action: () => onNavigate('clients'),
-      color: '#60A5FA'
-    }
+    { title: t.createInvoice, icon: FileText, action: () => onNavigate('invoice'), color: '#1E3A8A' },
+    { title: t.viewReports, icon: BarChart3, action: () => onNavigate('reports'), color: '#60A5FA' },
+    { title: t.manageInventory, icon: Package, action: () => onNavigate('inventory'), color: '#3B82F6' },
+    { title: t.addClient, icon: Users, action: () => onNavigate('clients'), color: '#EAB308' }
   ];
 
+  const PieChartWithCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
   return (
-    <div className="flex flex-col h-full bg-background-white">
-      {/* Header */}
-      <motion.div 
-        className="bg-deep-blue px-6 py-4 flex items-center justify-between"
-        initial={{ y: -60 }}
+    <div className="flex flex-col h-full bg-gray-100">
+      <motion.div
+        className="bg-deep-blue px-6 pt-6 pb-20 safe-area-pt"
+        initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5 }}
       >
-        <div className="flex items-center gap-3">
-          <motion.button
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-            onClick={onSettingsOpen}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Menu className="w-6 h-6 text-white" />
-          </motion.button>
-          <div>
-            <h1 className="text-white text-xl">{userProfile?.shopName || 'Business'}</h1>
+        <div className="flex justify-between items-center mb-6">
+          {/* User Profile */}
+          <div className="flex items-center gap-3">
+            <button onClick={onSettingsOpen} className="p-2 touch-target">
+              <Menu className="w-6 h-6 text-white" />
+            </button>
+            <div className="flex flex-col">
+              <span className="text-white/80 text-sm">Welcome,</span>
+              <span className="text-white font-semibold text-lg">{userProfile?.shopName || 'User'}</span>
+            </div>
           </div>
+          <button className="p-2 touch-target">
+            <Bell className="w-6 h-6 text-white" />
+          </button>
         </div>
-        <motion.button
-          className="p-2 rounded-lg hover:bg-white/10 transition-colors relative"
-          whileTap={{ scale: 0.9 }}
-        >
-          <Bell className="w-6 h-6 text-white" />
-          <motion.div
-            className="absolute -top-1 -right-1 w-3 h-3 bg-light-blue rounded-full"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-        </motion.button>
       </motion.div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">
-        {/* Key Metrics */}
-        <motion.div 
-          className="p-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-        >
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            {metrics.map((metric, index) => (
-              <motion.div
-                key={metric.title}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + index * 0.1, duration: 0.4 }}
-              >
-                <Card className="min-w-[280px] rounded-2xl border-border-color shadow-sm">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <div 
-                        className="p-3 rounded-xl"
-                        style={{ backgroundColor: `${metric.color}15` }}
-                      >
-                        <metric.icon 
-                          className="w-6 h-6" 
-                          style={{ color: metric.color }}
-                        />
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {metric.trend === 'up' ? (
-                          <TrendingUp className="w-4 h-4 text-light-blue" />
-                        ) : (
-                          <TrendingDown className="w-4 h-4 text-red-500" />
-                        )}
-                        <span 
-                          className={`text-sm ${
-                            metric.trend === 'up' ? 'text-light-blue' : 'text-red-500'
-                          }`}
-                        >
-                          {metric.change}
-                        </span>
-                      </div>
+      <motion.div
+        className="flex-1 overflow-auto bg-background-white -mt-16 rounded-t-3xl shadow-xl px-6 pt-8 pb-24"
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        {/* Metric Cards */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          {metrics.map((metric, index) => (
+            <motion.div
+              key={index}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2 + index * 0.1, type: "spring", stiffness: 200 }}
+            >
+              <Card className="rounded-2xl border-border-color shadow-sm">
+                <CardContent className="p-4 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1 mb-1">
+                      <metric.icon className="w-4 h-4 text-text-secondary" />
+                      <span className="text-text-secondary text-xs">{metric.title}</span>
                     </div>
-                    <h3 className="text-2xl text-text-primary mb-1">{metric.value}</h3>
-                    <p className="text-text-secondary text-sm">{metric.title}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+                    <span className="text-text-primary text-lg font-semibold">{metric.value}</span>
+                  </div>
+                  <Badge variant="outline" className={`mt-2 ${metric.trend === 'up' ? 'text-green-600 bg-green-50 border-green-500' : 'text-red-600 bg-red-50 border-red-500'}`}>
+                    {metric.change}
+                    {metric.trend === 'up' ? <TrendingUp className="ml-1 w-3 h-3" /> : <TrendingDown className="ml-1 w-3 h-3" />}
+                  </Badge>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
 
-        {/* Financial Performance */}
-        <motion.div 
-          className="px-6 pb-6"
+        {/* Financial Performance Section */}
+        <motion.div
+          className="mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+          transition={{ delay: 0.4 }}
         >
+          <h2 className="text-lg font-semibold mb-4">{t.performance}</h2>
           <Card className="rounded-2xl border-border-color shadow-sm">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-deep-blue">{t.performance}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Revenue Breakdown Pie Chart */}
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={revenueData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {revenueData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
+            <CardContent className="p-6">
+              {/* Charts */}
+              <div className="flex justify-between items-center mb-4">
+                <div className="w-1/2 h-40">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={revenueData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={60}
+                        fill="#8884d8"
+                        dataKey="value"
+                        labelLine={false}
+                        label={PieChartWithCustomLabel}
+                      >
+                        {revenueData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="w-1/2 flex flex-col justify-center">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-3 h-3 bg-[#1E3A8A] rounded-full"></span>
+                    <span className="text-sm">{revenueData[0].name} ({revenueData[0].value}%)</span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-3 h-3 bg-[#60A5FA] rounded-full"></span>
+                    <span className="text-sm">{revenueData[1].name} ({revenueData[1].value}%)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 bg-[#3B82F6] rounded-full"></span>
+                    <span className="text-sm">{revenueData[2].name} ({revenueData[2].value}%)</span>
+                  </div>
+                </div>
               </div>
-
-              {/* Monthly Revenue Bar Chart */}
-              <div className="h-48">
+              <div className="h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyData}>
-                    <XAxis 
-                      dataKey="month" 
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                    />
-                    <YAxis hide />
-                    <Bar 
-                      dataKey="revenue" 
-                      fill="#60A5FA" 
-                      radius={[4, 4, 0, 0]}
-                    />
+                    <XAxis dataKey="month" stroke="#9CA3AF" />
+                    <YAxis stroke="#9CA3AF" />
+                    <Bar dataKey="revenue" fill="#1E3A8A" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -279,51 +215,34 @@ export function DashboardScreen({ userProfile, language, labels, onNavigate, onS
           </Card>
         </motion.div>
 
-        {/* Quick Actions */}
-        <motion.div 
-          className="px-6 pb-24"
+        {/* Quick Actions Section */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+          transition={{ delay: 0.5 }}
         >
-          <h2 className="text-deep-blue text-lg mb-4">{t.quickActions}</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <h2 className="text-lg font-semibold mb-4">{t.quickActions}</h2>
+          <div className="grid grid-cols-2 gap-3">
             {quickActions.map((action, index) => (
-              <motion.div
-                key={action.title}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 + index * 0.1, duration: 0.3 }}
+              <motion.button
+                key={index}
+                onClick={action.action}
+                className="flex flex-col items-start p-4 bg-gray-50 rounded-2xl border border-border-color shadow-sm touch-target"
+                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + index * 0.1 }}
               >
-                <Button
-                  onClick={action.action}
-                  className="w-full h-20 rounded-2xl border-2 border-light-blue/20 bg-white hover:bg-light-blue/5 text-text-primary p-4 flex flex-col items-center justify-center gap-2 transition-all duration-200"
-                  variant="outline"
-                >
-                  <action.icon 
-                    className="w-6 h-6" 
-                    style={{ color: action.color }}
-                  />
-                  <span className="text-sm text-center">{action.title}</span>
-                </Button>
-              </motion.div>
+                <div className="p-3 rounded-xl mb-3" style={{ backgroundColor: `${action.color}1A` }}>
+                  <action.icon className="w-6 h-6" style={{ color: action.color }} />
+                </div>
+                <span className="text-text-primary text-sm font-medium">{action.title}</span>
+              </motion.button>
             ))}
           </div>
         </motion.div>
-      </div>
-
-      {/* FAB */}
-      <motion.button
-        className="fixed bottom-20 right-6 w-16 h-16 bg-light-blue rounded-full shadow-lg flex items-center justify-center z-10"
-        onClick={() => onNavigate('quickadd')}
-        whileTap={{ scale: 0.9, rotate: 45 }}
-        whileHover={{ scale: 1.05 }}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
-      >
-        <Plus className="w-8 h-8 text-white" />
-      </motion.button>
+      </motion.div>
     </div>
   );
 }

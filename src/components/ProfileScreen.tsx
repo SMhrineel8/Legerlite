@@ -1,267 +1,147 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Edit, Store, User, Phone, MapPin, Globe, BarChart3, AlertTriangle } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { Avatar, AvatarFallback } from './ui/avatar';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
-import { mockInventoryItems, mockEarningsData, businessMetrics } from '../constants/mockData';
-import { profileLabels } from '../constants/labels';
+import { Phone, MapPin, Edit, LogOut, ReceiptText, Settings, Users, Package, BarChart3, ChevronRight, IndianRupee } from 'lucide-react';
+import { Card, CardContent } from './ui/card';
 import type { Screen, UserProfile, Language } from '../App';
 
 interface ProfileScreenProps {
   userProfile: UserProfile | null;
   language: Language;
-  labels: any;
   onNavigate: (screen: Screen) => void;
   onSettingsOpen: () => void;
 }
 
-export function ProfileScreen({ userProfile, language, labels, onNavigate }: ProfileScreenProps) {
-  const t = profileLabels[language];
-
-  const getInitials = (name: string) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
-  };
-
-  const getLowStockItems = () => {
-    return mockInventoryItems.filter(item => item.stock <= item.lowStockThreshold);
-  };
-
-  const getStockStatus = (item: any) => {
-    if (item.stock === 0) return 'out';
-    if (item.stock <= item.lowStockThreshold) return 'low';
-    return 'good';
-  };
-
-  const getStockColor = (status: string) => {
-    switch (status) {
-      case 'out': return '#EF4444';
-      case 'low': return '#F59E0B';
-      default: return '#10B981';
+export function ProfileScreen({ userProfile, language, onNavigate, onSettingsOpen }: ProfileScreenProps) {
+  const profileLabels: Record<Language, any> = {
+    en: {
+      profile: 'Profile',
+      edit: 'Edit',
+      businessMetrics: 'Business Metrics',
+      totalRevenue: 'Total Revenue',
+      totalClients: 'Total Clients',
+      totalOrders: 'Total Orders',
+      totalProducts: 'Total Products',
+      settings: 'Settings',
+      manageAccount: 'Manage Account',
+      logout: 'Logout'
+    },
+    hi: {
+      profile: 'प्रोफ़ाइल',
+      edit: 'संपादित करें',
+      businessMetrics: 'व्यवसाय मेट्रिक्स',
+      totalRevenue: 'कुल आय',
+      totalClients: 'कुल ग्राहक',
+      totalOrders: 'कुल ऑर्डर',
+      totalProducts: 'कुल उत्पाद',
+      settings: 'सेटिंग्स',
+      manageAccount: 'खाता प्रबंधित करें',
+      logout: 'लॉगआउट'
     }
   };
 
-  const lowStockItems = getLowStockItems();
-  const currentMonthEarnings = mockEarningsData[mockEarningsData.length - 1]?.thisMonth || 0;
-  const previousMonthEarnings = mockEarningsData[mockEarningsData.length - 1]?.lastMonth || 0;
-  const earningsGrowth = previousMonthEarnings > 0 
-    ? Math.round(((currentMonthEarnings - previousMonthEarnings) / previousMonthEarnings) * 100)
-    : 0;
+  const t = profileLabels[language];
+
+  // Mock data for business metrics
+  const businessMetrics = [
+    { title: t.totalRevenue, value: '₹2,45,000', icon: IndianRupee },
+    { title: t.totalClients, value: '5', icon: Users },
+    { title: t.totalOrders, value: '130', icon: ReceiptText },
+    { title: t.totalProducts, value: '50', icon: Package },
+  ];
+
+  const settingsOptions = [
+    { title: t.manageAccount, icon: Settings, action: onSettingsOpen },
+    { title: t.logout, icon: LogOut, action: () => console.log('Logout') },
+  ];
 
   return (
     <div className="flex flex-col h-full bg-background-white">
-      {/* Header */}
-      <motion.div 
-        className="bg-deep-blue px-6 py-4 flex items-center justify-between"
+      <motion.div
+        className="bg-deep-blue px-6 py-4"
         initial={{ y: -60 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1 className="text-white text-xl">{t.myProfile}</h1>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-light-blue hover:bg-white/10 p-2"
-          onClick={onSettingsOpen}
-        >
-          <Edit className="w-5 h-5" />
-        </Button>
+        <h1 className="text-white text-xl mb-4">{t.profile}</h1>
       </motion.div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-auto p-6 pb-24 space-y-6">
-        {/* Profile Summary */}
+      <div className="flex-1 overflow-auto p-6 pb-24">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card className="rounded-2xl border-light-blue/20">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4 mb-6">
-                <Avatar className="w-16 h-16 border-2 border-light-blue">
-                  <AvatarFallback className="bg-light-blue/10 text-deep-blue text-xl">
-                    {getInitials(userProfile?.shopName || '')}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <h3 className="text-xl text-deep-blue mb-1">{userProfile?.shopName}</h3>
-                  <p className="text-text-secondary">{userProfile?.ownerName}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Store className="w-4 h-4 text-text-secondary" />
-                    <span className="text-text-primary">{userProfile?.shopName}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <User className="w-4 h-4 text-text-secondary" />
-                    <span className="text-text-primary">{userProfile?.ownerName}</span>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4 text-text-secondary" />
-                    <span className="text-text-primary">{userProfile?.whatsappPhone}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-4 h-4 text-text-secondary" />
-                    <span className="text-text-primary">{userProfile?.city}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Globe className="w-4 h-4 text-text-secondary" />
-                    <span className="text-text-primary">
-                      {language === 'hi' ? t.hindi : t.english}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Earnings Chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="rounded-2xl border-border-color">
-            <CardHeader>
-              <CardTitle className="text-deep-blue flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
-                {t.earnings}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="text-center">
-                  <p className="text-deep-blue text-2xl">₹{currentMonthEarnings.toLocaleString()}</p>
-                  <p className="text-text-secondary text-sm">{t.thisMonth}</p>
+          {/* User Info Card */}
+          <Card className="rounded-2xl border-border-color shadow-sm">
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-text-primary text-xl font-bold">{userProfile?.shopName || 'Shop Name'}</h3>
+                  <button onClick={() => console.log('Edit Profile')} whileTap={{ scale: 0.95 }}>
+                    <Edit className="w-4 h-4 text-deep-blue" />
+                  </button>
                 </div>
-                <div className="text-center">
-                  <p className="text-light-blue text-2xl">₹{previousMonthEarnings.toLocaleString()}</p>
-                  <p className="text-text-secondary text-sm">{t.lastMonth}</p>
+                <p className="text-text-secondary text-sm mb-2">{userProfile?.ownerName || 'Owner Name'}</p>
+                <div className="flex items-center gap-2 text-text-secondary text-sm mb-1">
+                  <Phone className="w-4 h-4" />
+                  <span>{userProfile?.whatsappPhone || 'Phone Number'}</span>
                 </div>
-              </div>
-              <div className="text-center mb-4">
-                <span className={`text-sm ${earningsGrowth >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                  {earningsGrowth >= 0 ? '+' : ''}{earningsGrowth}% {t.growth}
-                </span>
-              </div>
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={mockEarningsData}>
-                    <XAxis 
-                      dataKey="month" 
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                    />
-                    <YAxis hide />
-                    <Bar dataKey="lastMonth" fill="#1E3A8A" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="thisMonth" fill="#60A5FA" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <div className="flex items-center gap-2 text-text-secondary text-sm">
+                  <MapPin className="w-4 h-4" />
+                  <span>{userProfile?.city || 'City'}</span>
+                </div>
               </div>
             </CardContent>
           </Card>
-        </motion.div>
 
-        {/* Low Inventory Items */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <Card className="rounded-2xl border-border-color">
-            <CardHeader>
-              <CardTitle className="text-deep-blue flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5" />
-                {t.lowInventory}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {lowStockItems.length > 0 ? (
-                lowStockItems.map((item, index) => {
-                  const stockStatus = getStockStatus(item);
-                  const stockColor = getStockColor(stockStatus);
-                  const itemName = language === 'hi' ? item.nameHi : item.name;
+          {/* Business Metrics */}
+          <div>
+            <h2 className="text-lg font-semibold mb-4">{t.businessMetrics}</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {businessMetrics.map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                >
+                  <Card className="rounded-2xl border-border-color shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <item.icon className="w-4 h-4 text-deep-blue" />
+                        <span className="text-text-secondary text-sm">{item.title}</span>
+                      </div>
+                      <span className="text-text-primary text-xl font-semibold">{item.value}</span>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
 
-                  return (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 + index * 0.1 }}
-                    >
-                      <Card className="rounded-xl border-border-color">
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-text-primary">{itemName}</h4>
-                            <Badge 
-                              variant="outline"
-                              style={{ 
-                                borderColor: stockColor,
-                                color: stockColor,
-                                backgroundColor: `${stockColor}10`
-                              }}
-                            >
-                              {stockStatus === 'out' ? t.outOfStock : t.lowStock}
-                            </Badge>
-                          </div>
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-1">
-                              <motion.div
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: stockColor }}
-                                animate={{ 
-                                  scale: stockStatus === 'low' ? [1, 1.2, 1] : 1 
-                                }}
-                                transition={{ 
-                                  duration: 1.5, 
-                                  repeat: stockStatus === 'low' ? Infinity : 0 
-                                }}
-                              />
-                              <span className="text-text-secondary text-sm">
-                                {item.stock} {t.pieces}
-                              </span>
-                            </div>
-                            <span className="text-text-secondary text-sm">₹{item.price}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              className="flex-1 bg-deep-blue hover:bg-deep-blue/90"
-                              onClick={() => onNavigate('inventory')}
-                            >
-                              {t.okay}
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="flex-1 border-text-secondary text-text-secondary"
-                            >
-                              {t.ignore}
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  );
-                })
-              ) : (
-                <div className="text-center py-8">
-                  <AlertTriangle className="w-12 h-12 text-text-secondary mx-auto mb-3 opacity-50" />
-                  <p className="text-text-secondary">All inventory levels are good!</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Settings Options */}
+          <div>
+            <h2 className="text-lg font-semibold mb-4">{t.settings}</h2>
+            <div className="space-y-3">
+              {settingsOptions.map((item, index) => (
+                <motion.button
+                  key={index}
+                  onClick={item.action}
+                  className="w-full flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-border-color shadow-sm"
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-lg" style={{ backgroundColor: '#E0E7FF' }}>
+                      <item.icon className="w-6 h-6 text-deep-blue" />
+                    </div>
+                    <span className="text-text-primary font-medium">{item.title}</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-text-secondary" />
+                </motion.button>
+              ))}
+            </div>
+          </div>
         </motion.div>
       </div>
     </div>
