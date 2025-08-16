@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { OnboardingScreen } from './components/OnboardingScreen';
 import { DashboardScreen } from './components/DashboardScreen';
 import { InventoryScreen } from './components/InventoryScreen';

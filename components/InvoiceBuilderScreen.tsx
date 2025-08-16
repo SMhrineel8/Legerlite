@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Plus, Download, Share, Calendar, User, Hash } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';

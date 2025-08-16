@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Search, Plus, Phone, MapPin, Users, IndianRupee } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
