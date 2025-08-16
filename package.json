@@ -57,15 +57,16 @@
     "recharts": "^2.15.4",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "5.0.0",
-    "autoprefixer": "10.4.14",
-    "postcss": "8.4.30",
-    "tailwindcss": "3.4.7",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
     "typescript": "5.4.2",
     "vite": "5.4.3"
   }
